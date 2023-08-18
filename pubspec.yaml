@@ -24,7 +24,7 @@ dependencies:
       url: https://github.com/amsyary/flutter_link_previewer.git
       ref: 431fce3
   meta: ^1.7.0
-  photo_view: ^0.13.0
+  photo_view: ^0.14.0
   visibility_detector: ^0.2.2
 
 dev_dependencies:
