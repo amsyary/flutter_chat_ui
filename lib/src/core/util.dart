@@ -73,9 +73,9 @@ Future<types.Room> processRoomDocument(
 ) async {
   final data = doc.data()!;
 
-  data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
+  data['createdAt'] = data['createdAt'];
   data['id'] = doc.id;
-  data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+  data['updatedAt'] = data['updatedAt'];
 
   var imageUrl = data['imageUrl'] as String?;
   var name = data['name'] as String?;

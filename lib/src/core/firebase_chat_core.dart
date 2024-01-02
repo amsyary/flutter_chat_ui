@@ -108,6 +108,7 @@ class FirebaseChatCore {
         .collection(config.roomsCollectionName)
         .where('userIds', arrayContains: fu.uid)
         .get();
+    print('room length : ' + query.docs.length.toString());
 
     final rooms = await processRoomsQuery(
       fu,
