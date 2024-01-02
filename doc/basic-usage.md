@@ -21,7 +21,7 @@ Try to write any URL, for example, `flyer.chat`, it should be unwrapped in a ric
 import 'dart:convert';
 import 'dart:math';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/src/types/types_export.dart' as types;
 import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 
 // For the testing purposes, you should probably use https://pub.dev/packages/uuid

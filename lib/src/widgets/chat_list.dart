@@ -1,6 +1,6 @@
 import 'package:diffutil_dart/diffutil.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/src/types/types_export.dart' as types;
 import 'inherited_chat_theme.dart';
 import 'inherited_user.dart';
 

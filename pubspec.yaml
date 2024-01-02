@@ -15,22 +15,25 @@ dependencies:
     sdk: flutter
   diffutil_dart: ^3.0.0
   equatable: ^2.0.3
-  flutter_chat_types:
-    git:
-      url: https://github.com/amsyary/flutter_chat_types.git
-      ref: 8512211967d82a6ea6218740a5839e239fd1970a
-  flutter_link_previewer:
-    git:
-      url: https://github.com/amsyary/flutter_link_previewer.git
-      ref: 431fce3
   meta: ^1.7.0
   photo_view: ^0.14.0
   visibility_detector: ^0.2.2
+  intl: ^0.19.0
+  flutter_linkify: ^5.0.2
+  html: ^0.15.0
+  http: ^1.1.0
+  linkify: ^4.1.0
+  url_launcher: ^6.0.20
+  json_annotation: ^4.8.1
+  cloud_firestore: ^4.8.5
+  firebase_auth: ^4.7.3
+  firebase_core: ^2.2.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4
   flutter_test:
     sdk: flutter
+  json_serializable: ^6.7.1
 
 flutter:
   assets:

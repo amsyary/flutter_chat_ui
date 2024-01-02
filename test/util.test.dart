@@ -3,7 +3,7 @@ import 'package:flutter_chat_ui/flutter_chat_ui.dart';
 import 'package:flutter_chat_ui/src/models/message_spacer.dart';
 import 'package:flutter_chat_ui/src/models/preview_image.dart';
 import 'package:flutter_chat_ui/src/util.dart';
-import 'package:flutter_chat_types/flutter_chat_types.dart' as types;
+import 'package:flutter_chat_ui/src/types/types_export.dart' as types;
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {
@@ -20,7 +20,7 @@ void main() {
   group('getUserAvatarNameColor', () {
     test('returns correct avatar color', () {
       types.User user =
-          const types.User(firstName: 'John', id: '1', lastName: 'Doe');
+          const types.User(displayName: 'John', id: '1', lastName: 'Doe');
       expect(getUserAvatarNameColor(user, colors), const Color(0xff66e0da));
     });
   });
@@ -28,7 +28,7 @@ void main() {
   group('getUserInitials', () {
     test('returns correct user initials', () {
       types.User user =
-          const types.User(firstName: 'John', id: '1', lastName: 'Doe');
+          const types.User(displayName: 'John', id: '1', lastName: 'Doe');
       expect(getUserInitials(user), 'JD');
     });
   });
@@ -37,13 +37,13 @@ void main() {
     test('returns correct user name when first name and last name provided',
         () {
       types.User user =
-          const types.User(firstName: 'John', id: '1', lastName: 'Doe');
+          const types.User(displayName: 'John', id: '1', lastName: 'Doe');
       expect(getUserName(user), 'John Doe');
     });
 
     test('returns correct user name when only first name provided', () {
       types.User user = const types.User(
-        firstName: 'John',
+        displayName: 'John',
         id: '1',
       );
       expect(getUserName(user), 'John');
