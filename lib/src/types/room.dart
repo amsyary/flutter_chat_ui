@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -43,7 +44,7 @@ class Room extends Equatable {
     Map<String, dynamic>? metadata,
     String? name,
     RoomType? type,
-    int? updatedAt,
+    DateTime? updatedAt,
     List<User>? users,
   }) {
     return Room(
@@ -77,8 +78,10 @@ class Room extends Equatable {
         users
       ];
 
-  /// Created room timestamp, in ms
-  final int? createdAt;
+  /// Created room time
+  @JsonKey(
+      name: 'createdAt', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  final DateTime? createdAt;
 
   /// Room's unique ID
   final String id;
@@ -100,9 +103,18 @@ class Room extends Equatable {
   /// [RoomType]
   final RoomType? type;
 
-  /// Updated room timestamp, in ms
-  final int? updatedAt;
+  /// Updated room DateTime
+  @JsonKey(
+      name: 'updatedAt', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  final DateTime? updatedAt;
 
   /// List of users which are in the room
   final List<User> users;
+
+  static DateTime? _dateTimeFromJson(Timestamp? timestamp) =>
+      timestamp?.toDate();
+  static Timestamp? _dateTimeToJson(DateTime? dateTime) {
+    if (dateTime == null) return null;
+    return Timestamp.fromDate(dateTime);
+  }
 }

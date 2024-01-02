@@ -14,5 +14,7 @@ export 'src/widgets/input.dart';
 export 'src/widgets/message.dart';
 export 'src/widgets/send_button.dart';
 export 'src/widgets/text_message.dart';
+
+//chat core export
 export 'src/core/firebase_chat_core.dart';
 export 'src/core/firebase_chat_core_config.dart';
