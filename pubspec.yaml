@@ -25,9 +25,9 @@ dependencies:
   linkify: ^5.0.0
   url_launcher: ^6.0.20
   json_annotation: ^4.8.1
-  cloud_firestore: ^4.8.5
-  firebase_auth: ^4.7.3
-  firebase_core: ^2.2.0
+  cloud_firestore: ^5.2.1
+  firebase_auth: ^5.1.4
+  firebase_core: ^3.3.0
 
 dev_dependencies:
   flutter_lints: ^1.0.4
