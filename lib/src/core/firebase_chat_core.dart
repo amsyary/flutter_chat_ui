@@ -245,9 +245,9 @@ class FirebaseChatCore {
             );
 
             data['author'] = author.toJson();
-            data['createdAt'] = data['createdAt']?.millisecondsSinceEpoch;
+            data['createdAt'] = data['createdAt'];
             data['id'] = doc.id;
-            data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+            data['updatedAt'] = data['updatedAt'];
 
             return [...previousValue, types.Message.fromJson(data)];
           },
@@ -433,8 +433,8 @@ class FirebaseChatCore {
 
               data['createdAt'] = data['createdAt'];
               data['id'] = doc.id;
-              data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
-              data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+              data['lastSeen'] = data['lastSeen'];
+              data['updatedAt'] = data['updatedAt'];
 
               return [...previousValue, types.User.fromJson(data)];
             },

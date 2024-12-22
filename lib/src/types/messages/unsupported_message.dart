@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import '../message.dart';
@@ -16,7 +17,7 @@ class UnsupportedMessage extends Message {
   /// Creates an unsupported message.
   const UnsupportedMessage({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     Map<String, dynamic>? metadata,
     String? remoteId,
@@ -24,7 +25,7 @@ class UnsupportedMessage extends Message {
     String? roomId,
     Status? status,
     MessageType? type,
-    int? updatedAt,
+    DateTime? updatedAt,
   }) : super(
           author,
           createdAt,
@@ -63,7 +64,7 @@ class UnsupportedMessage extends Message {
     String? remoteId,
     Status? status,
     String? text,
-    int? updatedAt,
+    DateTime? updatedAt,
     String? uri,
   }) {
     return UnsupportedMessage(

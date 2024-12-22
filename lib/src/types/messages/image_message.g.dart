@@ -8,7 +8,7 @@ part of 'image_message.dart';
 
 ImageMessage _$ImageMessageFromJson(Map<String, dynamic> json) => ImageMessage(
       author: User.fromJson(json['author'] as Map<String, dynamic>),
-      createdAt: json['createdAt'] as int?,
+      createdAt: Message.dateTimeFromJson(json['createdAt'] as Timestamp?),
       height: (json['height'] as num?)?.toDouble(),
       id: json['id'] as String,
       metadata: json['metadata'] as Map<String, dynamic>?,
@@ -21,7 +21,7 @@ ImageMessage _$ImageMessageFromJson(Map<String, dynamic> json) => ImageMessage(
       size: json['size'] as num,
       status: $enumDecodeNullable(_$StatusEnumMap, json['status']),
       type: $enumDecodeNullable(_$MessageTypeEnumMap, json['type']),
-      updatedAt: json['updatedAt'] as int?,
+      updatedAt: Message.dateTimeFromJson(json['updatedAt'] as Timestamp?),
       uri: json['uri'] as String,
       width: (json['width'] as num?)?.toDouble(),
     );
@@ -29,7 +29,7 @@ ImageMessage _$ImageMessageFromJson(Map<String, dynamic> json) => ImageMessage(
 Map<String, dynamic> _$ImageMessageToJson(ImageMessage instance) =>
     <String, dynamic>{
       'author': instance.author,
-      'createdAt': instance.createdAt,
+      'createdAt': Message.dateTimeToJson(instance.createdAt),
       'id': instance.id,
       'metadata': instance.metadata,
       'remoteId': instance.remoteId,
@@ -37,7 +37,7 @@ Map<String, dynamic> _$ImageMessageToJson(ImageMessage instance) =>
       'roomId': instance.roomId,
       'status': _$StatusEnumMap[instance.status],
       'type': _$MessageTypeEnumMap[instance.type]!,
-      'updatedAt': instance.updatedAt,
+      'updatedAt': Message.dateTimeToJson(instance.updatedAt),
       'height': instance.height,
       'name': instance.name,
       'size': instance.size,

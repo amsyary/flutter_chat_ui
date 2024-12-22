@@ -8,7 +8,7 @@ part of 'text_message.dart';
 
 TextMessage _$TextMessageFromJson(Map<String, dynamic> json) => TextMessage(
       author: User.fromJson(json['author'] as Map<String, dynamic>),
-      createdAt: json['createdAt'] as int?,
+      createdAt: Message.dateTimeFromJson(json['createdAt'] as Timestamp?),
       id: json['id'] as String,
       metadata: json['metadata'] as Map<String, dynamic>?,
       previewData: json['previewData'] == null
@@ -22,13 +22,13 @@ TextMessage _$TextMessageFromJson(Map<String, dynamic> json) => TextMessage(
       status: $enumDecodeNullable(_$StatusEnumMap, json['status']),
       text: json['text'] as String,
       type: $enumDecodeNullable(_$MessageTypeEnumMap, json['type']),
-      updatedAt: json['updatedAt'] as int?,
+      updatedAt: Message.dateTimeFromJson(json['updatedAt'] as Timestamp?),
     );
 
 Map<String, dynamic> _$TextMessageToJson(TextMessage instance) =>
     <String, dynamic>{
       'author': instance.author,
-      'createdAt': instance.createdAt,
+      'createdAt': Message.dateTimeToJson(instance.createdAt),
       'id': instance.id,
       'metadata': instance.metadata,
       'remoteId': instance.remoteId,
@@ -36,7 +36,7 @@ Map<String, dynamic> _$TextMessageToJson(TextMessage instance) =>
       'roomId': instance.roomId,
       'status': _$StatusEnumMap[instance.status],
       'type': _$MessageTypeEnumMap[instance.type]!,
-      'updatedAt': instance.updatedAt,
+      'updatedAt': Message.dateTimeToJson(instance.updatedAt),
       'previewData': instance.previewData,
       'text': instance.text,
     };

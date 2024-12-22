@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import '../message.dart';
@@ -14,7 +15,7 @@ class TextMessage extends Message {
   /// Creates a text message.
   const TextMessage({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     Map<String, dynamic>? metadata,
     this.previewData,
@@ -24,7 +25,7 @@ class TextMessage extends Message {
     Status? status,
     required this.text,
     MessageType? type,
-    int? updatedAt,
+    DateTime? updatedAt,
   }) : super(
           author,
           createdAt,
@@ -41,14 +42,14 @@ class TextMessage extends Message {
   /// Creates a full text message from a partial one.
   TextMessage.fromPartial({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     required PartialText partialText,
     String? remoteId,
     Message? repliedMessage,
     String? roomId,
     Status? status,
-    int? updatedAt,
+    DateTime? updatedAt,
   })  : previewData = partialText.previewData,
         text = partialText.text,
         super(
@@ -65,8 +66,10 @@ class TextMessage extends Message {
         );
 
   /// Creates a text message from a map (decoded JSON).
-  factory TextMessage.fromJson(Map<String, dynamic> json) =>
-      _$TextMessageFromJson(json);
+  factory TextMessage.fromJson(Map<String, dynamic> json) {
+    json['id'] = json['id'] ?? '';
+    return _$TextMessageFromJson(json);
+  }
 
   /// Converts a text message to the map representation, encodable to JSON.
   @override
@@ -86,7 +89,7 @@ class TextMessage extends Message {
     String? remoteId,
     Status? status,
     String? text,
-    int? updatedAt,
+    DateTime? updatedAt,
     String? uri,
   }) {
     return TextMessage(

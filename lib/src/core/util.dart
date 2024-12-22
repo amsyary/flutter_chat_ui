@@ -37,9 +37,9 @@ Future<Map<String, dynamic>> fetchUser(
   }
   data['createdAt'] = data['createdAt'];
   data['id'] = doc.id;
-  data['lastSeen'] = data['lastSeen']?.millisecondsSinceEpoch;
+  data['lastSeen'] = data['lastSeen'];
   data['role'] = role;
-  data['updatedAt'] = data['updatedAt']?.millisecondsSinceEpoch;
+  data['updatedAt'] = data['updatedAt'];
 
   return data;
 }
@@ -79,7 +79,8 @@ Future<types.Room> processRoomDocument(
 
   var imageUrl = data['imageUrl'] as String?;
   var name = data['name'] as String?;
-  final type = data['type'] as String;
+  const type = 'direct';
+  // final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
   final userRoles = data['userRoles'] as Map<String, dynamic>?;
 
@@ -121,9 +122,9 @@ Future<types.Room> processRoomDocument(
       );
 
       lm['author'] = author;
-      lm['createdAt'] = lm['createdAt']?.millisecondsSinceEpoch;
+      lm['createdAt'] = lm['createdAt'];
       lm['id'] = lm['id'] ?? '';
-      lm['updatedAt'] = lm['updatedAt']?.millisecondsSinceEpoch;
+      lm['updatedAt'] = lm['updatedAt'];
 
       return lm;
     }).toList();

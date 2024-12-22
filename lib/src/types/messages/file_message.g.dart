@@ -8,7 +8,7 @@ part of 'file_message.dart';
 
 FileMessage _$FileMessageFromJson(Map<String, dynamic> json) => FileMessage(
       author: User.fromJson(json['author'] as Map<String, dynamic>),
-      createdAt: json['createdAt'] as int?,
+      createdAt: Message.dateTimeFromJson(json['createdAt'] as Timestamp?),
       id: json['id'] as String,
       metadata: json['metadata'] as Map<String, dynamic>?,
       mimeType: json['mimeType'] as String?,
@@ -21,14 +21,14 @@ FileMessage _$FileMessageFromJson(Map<String, dynamic> json) => FileMessage(
       size: json['size'] as num,
       status: $enumDecodeNullable(_$StatusEnumMap, json['status']),
       type: $enumDecodeNullable(_$MessageTypeEnumMap, json['type']),
-      updatedAt: json['updatedAt'] as int?,
+      updatedAt: Message.dateTimeFromJson(json['updatedAt'] as Timestamp?),
       uri: json['uri'] as String,
     );
 
 Map<String, dynamic> _$FileMessageToJson(FileMessage instance) =>
     <String, dynamic>{
       'author': instance.author,
-      'createdAt': instance.createdAt,
+      'createdAt': Message.dateTimeToJson(instance.createdAt),
       'id': instance.id,
       'metadata': instance.metadata,
       'remoteId': instance.remoteId,
@@ -36,7 +36,7 @@ Map<String, dynamic> _$FileMessageToJson(FileMessage instance) =>
       'roomId': instance.roomId,
       'status': _$StatusEnumMap[instance.status],
       'type': _$MessageTypeEnumMap[instance.type]!,
-      'updatedAt': instance.updatedAt,
+      'updatedAt': Message.dateTimeToJson(instance.updatedAt),
       'mimeType': instance.mimeType,
       'name': instance.name,
       'size': instance.size,

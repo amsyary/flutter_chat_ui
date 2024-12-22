@@ -1,4 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
+import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import 'messages/custom_message.dart';
 import 'messages/file_message.dart';
@@ -44,6 +46,21 @@ abstract class Message extends Equatable {
       case 'image':
         return ImageMessage.fromJson(json);
       case 'text':
+        final authorId = json['author']['authorId'];
+        final uid = json['author']['uid'];
+        json['author']['id'] = authorId;
+        json['id'] = uid ?? authorId;
+
+        // Handle createdAt and updatedAt as either Firebase Timestamp or int
+        if (json['createdAt'] is int) {
+          json['createdAt'] =
+              Timestamp.fromMillisecondsSinceEpoch(json['createdAt']);
+        }
+        if (json['updatedAt'] is int) {
+          json['updatedAt'] =
+              Timestamp.fromMillisecondsSinceEpoch(json['updatedAt']);
+        }
+
         return TextMessage.fromJson(json);
       default:
         return UnsupportedMessage.fromJson(json);
@@ -67,7 +84,7 @@ abstract class Message extends Equatable {
     String? remoteId,
     Status? status,
     String? text,
-    int? updatedAt,
+    DateTime? updatedAt,
     String? uri,
   });
 
@@ -78,7 +95,11 @@ abstract class Message extends Equatable {
   final User author;
 
   /// Created message timestamp, in ms
-  final int? createdAt;
+  @JsonKey(
+      name: 'createdAt',
+      fromJson: Message.dateTimeFromJson,
+      toJson: Message.dateTimeToJson)
+  final DateTime? createdAt;
 
   /// Unique ID of the message
   final String id;
@@ -102,5 +123,17 @@ abstract class Message extends Equatable {
   final MessageType type;
 
   /// Updated message timestamp, in ms
-  final int? updatedAt;
+  ///
+  @JsonKey(
+      name: 'updatedAt',
+      fromJson: Message.dateTimeFromJson,
+      toJson: Message.dateTimeToJson)
+  final DateTime? updatedAt;
+
+  static DateTime? dateTimeFromJson(Timestamp? timestamp) =>
+      timestamp?.toDate();
+  static Timestamp? dateTimeToJson(DateTime? dateTime) {
+    if (dateTime == null) return null;
+    return Timestamp.fromDate(dateTime);
+  }
 }

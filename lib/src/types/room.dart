@@ -28,7 +28,12 @@ class Room extends Equatable {
   });
 
   /// Creates room from a map (decoded JSON).
-  factory Room.fromJson(Map<String, dynamic> json) => _$RoomFromJson(json);
+  factory Room.fromJson(Map<String, dynamic> json) {
+    json['type'] = 'direct'; // Modify the type to be 'direct'
+    json['users'] =
+        json['users'] ?? []; // If users is null, set it to an empty array
+    return _$RoomFromJson(json);
+  }
 
   /// Converts room to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => _$RoomToJson(this);
@@ -111,8 +116,13 @@ class Room extends Equatable {
   /// List of users which are in the room
   final List<User> users;
 
-  static DateTime? _dateTimeFromJson(Timestamp? timestamp) =>
-      timestamp?.toDate();
+  static DateTime? _dateTimeFromJson(dynamic timestamp) {
+    if (timestamp == null) return null;
+    if (timestamp is Timestamp) return timestamp.toDate();
+    if (timestamp is Map) return null;
+    return null;
+  }
+
   static Timestamp? _dateTimeToJson(DateTime? dateTime) {
     if (dateTime == null) return null;
     return Timestamp.fromDate(dateTime);

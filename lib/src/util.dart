@@ -124,7 +124,9 @@ List<Object> calculateChatMessages(
           ((message.author.id != previousMessage?.author.id) ||
               (messageHasCreatedAt &&
                   previousMessage?.createdAt != null &&
-                  message.createdAt! - previousMessage!.createdAt! >
+                  message.createdAt!
+                          .difference(previousMessage!.createdAt!)
+                          .inMilliseconds >
                       groupMessagesThreshold));
 
       if (isFirstInGroup) {
@@ -144,14 +146,15 @@ List<Object> calculateChatMessages(
 
     if (messageHasCreatedAt && nextMessageHasCreatedAt) {
       nextMessageDateThreshold =
-          nextMessage!.createdAt! - message.createdAt! >= dateHeaderThreshold;
+          nextMessage!.createdAt!.difference(message.createdAt!) >=
+              Duration(milliseconds: dateHeaderThreshold);
 
       nextMessageDifferentDay =
-          DateTime.fromMillisecondsSinceEpoch(message.createdAt!).day !=
-              DateTime.fromMillisecondsSinceEpoch(nextMessage.createdAt!).day;
+          message.createdAt!.day != nextMessage.createdAt!.day;
 
       nextMessageInGroup = nextMessageSameAuthor &&
-          nextMessage.createdAt! - message.createdAt! <= groupMessagesThreshold;
+          nextMessage.createdAt!.difference(message.createdAt!) <=
+              Duration(milliseconds: groupMessagesThreshold);
     }
 
     if (isFirst && messageHasCreatedAt) {
@@ -159,11 +162,9 @@ List<Object> calculateChatMessages(
         0,
         DateHeader(
           text: customDateHeaderText != null
-              ? customDateHeaderText(
-                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
-                )
+              ? customDateHeaderText(message.createdAt!)
               : getVerboseDateTimeRepresentation(
-                  DateTime.fromMillisecondsSinceEpoch(message.createdAt!),
+                  message.createdAt!,
                   dateFormat: dateFormat,
                   dateLocale: dateLocale,
                   timeFormat: timeFormat,
@@ -198,10 +199,10 @@ List<Object> calculateChatMessages(
         DateHeader(
           text: customDateHeaderText != null
               ? customDateHeaderText(
-                  DateTime.fromMillisecondsSinceEpoch(nextMessage!.createdAt!),
+                  nextMessage!.createdAt!,
                 )
               : getVerboseDateTimeRepresentation(
-                  DateTime.fromMillisecondsSinceEpoch(nextMessage!.createdAt!),
+                  nextMessage!.createdAt!,
                   dateFormat: dateFormat,
                   dateLocale: dateLocale,
                   timeFormat: timeFormat,

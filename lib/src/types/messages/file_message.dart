@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import '../message.dart';
@@ -14,7 +15,7 @@ class FileMessage extends Message {
   /// Creates a file message.
   const FileMessage({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     Map<String, dynamic>? metadata,
     this.mimeType,
@@ -25,7 +26,7 @@ class FileMessage extends Message {
     required this.size,
     Status? status,
     MessageType? type,
-    int? updatedAt,
+    DateTime? updatedAt,
     required this.uri,
   }) : super(
           author,
@@ -43,14 +44,14 @@ class FileMessage extends Message {
   /// Creates a full file message from a partial one.
   FileMessage.fromPartial({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     required PartialFile partialFile,
     String? remoteId,
     Message? repliedMessage,
     String? roomId,
     Status? status,
-    int? updatedAt,
+    DateTime? updatedAt,
   })  : mimeType = partialFile.mimeType,
         name = partialFile.name,
         size = partialFile.size,
@@ -91,7 +92,7 @@ class FileMessage extends Message {
     String? remoteId,
     Status? status,
     String? text,
-    int? updatedAt,
+    DateTime? updatedAt,
     String? uri,
   }) {
     return FileMessage(

@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
@@ -24,7 +25,10 @@ class User extends Equatable {
   });
 
   /// Creates user from a map (decoded JSON).
-  factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
+  factory User.fromJson(Map<String, dynamic> json) {
+    json['id'] = json['id'] ?? (json['uid'] ?? '');
+    return _$UserFromJson(json);
+  }
 
   /// Converts user to the map representation, encodable to JSON.
   Map<String, dynamic> toJson() => _$UserToJson(this);
@@ -39,10 +43,10 @@ class User extends Equatable {
     String? displayName,
     String? imageUrl,
     String? lastName,
-    int? lastSeen,
+    DateTime? lastSeen,
     Map<String, dynamic>? metadata,
     Role? role,
-    int? updatedAt,
+    DateTime? updatedAt,
   }) {
     return User(
       displayName: displayName,
@@ -87,7 +91,9 @@ class User extends Equatable {
   final String? lastName;
 
   /// Timestamp when user was last visible, in ms
-  final int? lastSeen;
+  @JsonKey(
+      name: 'lastSeen', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  final DateTime? lastSeen;
 
   /// Additional custom metadata or attributes related to the user
   final Map<String, dynamic>? metadata;
@@ -96,5 +102,19 @@ class User extends Equatable {
   final Role? role;
 
   /// Updated user timestamp, in ms
-  final int? updatedAt;
+  @JsonKey(
+      name: 'updatedAt', fromJson: _dateTimeFromJson, toJson: _dateTimeToJson)
+  final DateTime? updatedAt;
+
+  static DateTime? _dateTimeFromJson(dynamic timestamp) {
+    if (timestamp == null) return null;
+    if (timestamp is Timestamp) return timestamp.toDate();
+    if (timestamp is Map) return null;
+    return null;
+  }
+
+  static Timestamp? _dateTimeToJson(DateTime? dateTime) {
+    if (dateTime == null) return null;
+    return Timestamp.fromDate(dateTime);
+  }
 }

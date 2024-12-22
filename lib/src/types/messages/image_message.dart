@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import '../message.dart';
@@ -14,7 +15,7 @@ class ImageMessage extends Message {
   /// Creates an image message.
   const ImageMessage({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     this.height,
     required String id,
     Map<String, dynamic>? metadata,
@@ -25,7 +26,7 @@ class ImageMessage extends Message {
     required this.size,
     Status? status,
     MessageType? type,
-    int? updatedAt,
+    DateTime? updatedAt,
     required this.uri,
     this.width,
   }) : super(
@@ -44,14 +45,14 @@ class ImageMessage extends Message {
   /// Creates a full image message from a partial one.
   ImageMessage.fromPartial({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     required PartialImage partialImage,
     String? remoteId,
     Message? repliedMessage,
     String? roomId,
     Status? status,
-    int? updatedAt,
+    DateTime? updatedAt,
   })  : height = partialImage.height,
         name = partialImage.name,
         size = partialImage.size,
@@ -93,7 +94,7 @@ class ImageMessage extends Message {
     String? remoteId,
     Status? status,
     String? text,
-    int? updatedAt,
+    DateTime? updatedAt,
     String? uri,
   }) {
     return ImageMessage(

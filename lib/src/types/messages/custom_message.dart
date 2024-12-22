@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:meta/meta.dart';
 import '../message.dart';
@@ -15,7 +16,7 @@ class CustomMessage extends Message {
   /// Creates a custom message.
   const CustomMessage({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     Map<String, dynamic>? metadata,
     String? remoteId,
@@ -23,7 +24,7 @@ class CustomMessage extends Message {
     String? roomId,
     Status? status,
     MessageType? type,
-    int? updatedAt,
+    DateTime? updatedAt,
   }) : super(
           author,
           createdAt,
@@ -40,14 +41,14 @@ class CustomMessage extends Message {
   /// Creates a full custom message from a partial one.
   CustomMessage.fromPartial({
     required User author,
-    int? createdAt,
+    DateTime? createdAt,
     required String id,
     required PartialCustom partialCustom,
     String? remoteId,
     Message? repliedMessage,
     String? roomId,
     Status? status,
-    int? updatedAt,
+    DateTime? updatedAt,
   }) : super(
           author,
           createdAt,
@@ -86,7 +87,7 @@ class CustomMessage extends Message {
     String? remoteId,
     Status? status,
     String? text,
-    int? updatedAt,
+    DateTime? updatedAt,
     String? uri,
   }) {
     return CustomMessage(

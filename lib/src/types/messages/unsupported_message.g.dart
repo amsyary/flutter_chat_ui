@@ -9,7 +9,7 @@ part of 'unsupported_message.dart';
 UnsupportedMessage _$UnsupportedMessageFromJson(Map<String, dynamic> json) =>
     UnsupportedMessage(
       author: User.fromJson(json['author'] as Map<String, dynamic>),
-      createdAt: json['createdAt'] as int?,
+      createdAt: Message.dateTimeFromJson(json['createdAt'] as Timestamp?),
       id: json['id'] as String,
       metadata: json['metadata'] as Map<String, dynamic>?,
       remoteId: json['remoteId'] as String?,
@@ -19,13 +19,13 @@ UnsupportedMessage _$UnsupportedMessageFromJson(Map<String, dynamic> json) =>
       roomId: json['roomId'] as String?,
       status: $enumDecodeNullable(_$StatusEnumMap, json['status']),
       type: $enumDecodeNullable(_$MessageTypeEnumMap, json['type']),
-      updatedAt: json['updatedAt'] as int?,
+      updatedAt: Message.dateTimeFromJson(json['updatedAt'] as Timestamp?),
     );
 
 Map<String, dynamic> _$UnsupportedMessageToJson(UnsupportedMessage instance) =>
     <String, dynamic>{
       'author': instance.author,
-      'createdAt': instance.createdAt,
+      'createdAt': Message.dateTimeToJson(instance.createdAt),
       'id': instance.id,
       'metadata': instance.metadata,
       'remoteId': instance.remoteId,
@@ -33,7 +33,7 @@ Map<String, dynamic> _$UnsupportedMessageToJson(UnsupportedMessage instance) =>
       'roomId': instance.roomId,
       'status': _$StatusEnumMap[instance.status],
       'type': _$MessageTypeEnumMap[instance.type]!,
-      'updatedAt': instance.updatedAt,
+      'updatedAt': Message.dateTimeToJson(instance.updatedAt),
     };
 
 const _$StatusEnumMap = {
