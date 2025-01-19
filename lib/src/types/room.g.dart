@@ -20,6 +20,9 @@ Room _$RoomFromJson(Map<String, dynamic> json) => Room(
       users: (json['users'] as List<dynamic>)
           .map((e) => User.fromJson(e as Map<String, dynamic>))
           .toList(),
+      isSpecial: json['isSpecial'] as bool?,
+      userIds:
+          (json['userIds'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
@@ -32,6 +35,8 @@ Map<String, dynamic> _$RoomToJson(Room instance) => <String, dynamic>{
       'type': _$RoomTypeEnumMap[instance.type],
       'updatedAt': Room._dateTimeToJson(instance.updatedAt),
       'users': instance.users,
+      'isSpecial': instance.isSpecial,
+      'userIds': instance.userIds,
     };
 
 const _$RoomTypeEnumMap = {

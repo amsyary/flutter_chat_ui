@@ -9,7 +9,7 @@ part of 'user.dart';
 User _$UserFromJson(Map<String, dynamic> json) => User(
       displayName: json['displayName'] as String?,
       id: json['id'] as String,
-      imageUrl: json['imageUrl'] as String?,
+      photoUrl: json['photoUrl'] as String?,
       lastName: json['lastName'] as String?,
       lastSeen: User._dateTimeFromJson(json['lastSeen']),
       metadata: json['metadata'] as Map<String, dynamic>?,
@@ -20,7 +20,7 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
 Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'displayName': instance.displayName,
       'id': instance.id,
-      'imageUrl': instance.imageUrl,
+      'photoUrl': instance.photoUrl,
       'lastName': instance.lastName,
       'lastSeen': User._dateTimeToJson(instance.lastSeen),
       'metadata': instance.metadata,

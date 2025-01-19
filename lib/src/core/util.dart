@@ -71,6 +71,9 @@ Future<types.Room> processRoomDocument(
   FirebaseFirestore instance,
   String usersCollectionName,
 ) async {
+  if (doc.data() == null) {
+    throw Exception('Room data is null');
+  }
   final data = doc.data()!;
 
   data['createdAt'] = data['createdAt'];
@@ -116,14 +119,15 @@ Future<types.Room> processRoomDocument(
 
   if (data['lastMessages'] != null) {
     final lastMessages = data['lastMessages'].map((lm) {
+      final id = lm['id'] as String?;
       final author = users.firstWhere(
-        (u) => u['id'] == lm['authorId'],
-        orElse: () => {'id': lm['authorId'] as String},
+        (u) => u['id'] == id,
+        orElse: () => {'id': id ?? ''},
       );
 
       lm['author'] = author;
       lm['createdAt'] = lm['createdAt'];
-      lm['id'] = lm['id'] ?? '';
+      lm['id'] = id ?? '';
       lm['updatedAt'] = lm['updatedAt'];
 
       return lm;

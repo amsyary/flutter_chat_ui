@@ -46,7 +46,7 @@ abstract class Message extends Equatable {
       case 'image':
         return ImageMessage.fromJson(json);
       case 'text':
-        final authorId = json['author']['authorId'];
+        final authorId = json['author']['id'];
         final uid = json['author']['uid'];
         json['author']['id'] = authorId;
         json['id'] = uid ?? authorId;

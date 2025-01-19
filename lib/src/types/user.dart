@@ -16,7 +16,7 @@ class User extends Equatable {
   const User({
     this.displayName,
     required this.id,
-    this.imageUrl,
+    this.photoUrl,
     this.lastName,
     this.lastSeen,
     this.metadata,
@@ -34,14 +34,14 @@ class User extends Equatable {
   Map<String, dynamic> toJson() => _$UserToJson(this);
 
   /// Creates a copy of the user with an updated data.
-  /// [firstName], [imageUrl], [lastName], [lastSeen], [role] and [updatedAt]
+  /// [firstName], [photoUrl], [lastName], [lastSeen], [role] and [updatedAt]
   /// with null values will nullify existing values.
   /// [metadata] with null value will nullify existing metadata, otherwise
   /// both metadatas will be merged into one Map, where keys from a passed
   /// metadata will overwite keys from the previous one.
   User copyWith({
     String? displayName,
-    String? imageUrl,
+    String? photoUrl,
     String? lastName,
     DateTime? lastSeen,
     Map<String, dynamic>? metadata,
@@ -51,7 +51,7 @@ class User extends Equatable {
     return User(
       displayName: displayName,
       id: id,
-      imageUrl: imageUrl,
+      photoUrl: photoUrl,
       lastName: lastName,
       lastSeen: lastSeen,
       metadata: metadata == null
@@ -70,7 +70,7 @@ class User extends Equatable {
   List<Object?> get props => [
         displayName,
         id,
-        imageUrl,
+        photoUrl,
         lastName,
         lastSeen,
         metadata,
@@ -85,7 +85,7 @@ class User extends Equatable {
   final String id;
 
   /// Remote image URL representing user's avatar
-  final String? imageUrl;
+  final String? photoUrl;
 
   /// Last name of the user
   final String? lastName;

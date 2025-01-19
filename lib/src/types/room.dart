@@ -25,6 +25,8 @@ class Room extends Equatable {
     required this.type,
     this.updatedAt,
     required this.users,
+    this.isSpecial,
+    this.userIds,
   });
 
   /// Creates room from a map (decoded JSON).
@@ -33,6 +35,13 @@ class Room extends Equatable {
     json['users'] =
         json['users'] ?? []; // If users is null, set it to an empty array
     return _$RoomFromJson(json);
+  }
+
+  /// Creates room from Firestore document
+  factory Room.fromFirestore(DocumentSnapshot doc) {
+    final data = doc.data() as Map<String, dynamic>;
+    data['id'] = doc.id;
+    return Room.fromJson(data);
   }
 
   /// Converts room to the map representation, encodable to JSON.
@@ -45,15 +54,18 @@ class Room extends Equatable {
   /// metadata will overwite keys from the previous one.
   /// [type] and [users] with null values will be overwritten by previous values.
   Room copyWith({
+    String? id,
     String? imageUrl,
     Map<String, dynamic>? metadata,
     String? name,
     RoomType? type,
     DateTime? updatedAt,
     List<User>? users,
+    bool? isSpecial,
+    List<String>? usersIds,
   }) {
     return Room(
-      id: id,
+      id: id ?? this.id,
       imageUrl: imageUrl,
       lastMessages: lastMessages,
       metadata: metadata == null
@@ -66,6 +78,8 @@ class Room extends Equatable {
       type: type ?? this.type,
       updatedAt: updatedAt,
       users: users ?? this.users,
+      isSpecial: isSpecial,
+      userIds: usersIds,
     );
   }
 
@@ -80,7 +94,9 @@ class Room extends Equatable {
         name,
         type,
         updatedAt,
-        users
+        users,
+        isSpecial,
+        userIds,
       ];
 
   /// Created room time
@@ -115,6 +131,12 @@ class Room extends Equatable {
 
   /// List of users which are in the room
   final List<User> users;
+
+  /// Mark if the room is special, like chat with Admin
+  final bool? isSpecial;
+
+  /// List of users ids
+  final List<String>? userIds;
 
   static DateTime? _dateTimeFromJson(dynamic timestamp) {
     if (timestamp == null) return null;

@@ -141,7 +141,7 @@ class FirebaseChatCore {
         .collection(config.roomsCollectionName)
         .add({
       'createdAt': FieldValue.serverTimestamp(),
-      'imageUrl': otherUser.imageUrl,
+      'imageUrl': otherUser.photoUrl,
       'metadata': metadata,
       'name': otherUser.displayName,
       'type': types.RoomType.direct.toShortString(),
@@ -167,7 +167,7 @@ class FirebaseChatCore {
         .set({
       'createdAt': FieldValue.serverTimestamp(),
       'firstName': user.displayName,
-      'imageUrl': user.imageUrl,
+      'imageUrl': user.photoUrl,
       'lastName': user.lastName,
       'lastSeen': user.lastSeen,
       'metadata': user.metadata,
@@ -240,8 +240,8 @@ class FirebaseChatCore {
           (previousValue, doc) {
             final data = doc.data();
             final author = room.users.firstWhere(
-              (u) => u.id == data['authorId'],
-              orElse: () => types.User(id: data['authorId'] as String),
+              (u) => u.id == data['id'],
+              orElse: () => types.User(id: data['id'] as String),
             );
 
             data['author'] = author.toJson();
@@ -347,11 +347,11 @@ class FirebaseChatCore {
     if (message != null) {
       final messageMap = message.toJson();
       messageMap.removeWhere((key, value) => key == 'author' || key == 'id');
-      messageMap['authorId'] = firebaseUser!.uid;
+      messageMap['id'] = firebaseUser!.uid;
       messageMap['createdAt'] = FieldValue.serverTimestamp();
       messageMap['updatedAt'] = FieldValue.serverTimestamp();
       messageMap['author'] = {
-        'authorId': firebaseUser!.uid,
+        'id': firebaseUser!.uid,
         'displayName': firebaseUser?.displayName
       };
       await getFirebaseFirestore()
@@ -369,7 +369,7 @@ class FirebaseChatCore {
     final messageMap = message.toJson();
     messageMap.removeWhere(
         (key, value) => key == 'author' || key == 'createdAt' || key == 'id');
-    messageMap['authorId'] = message.author.id;
+    messageMap['id'] = message.author.id;
     messageMap['updatedAt'] = FieldValue.serverTimestamp();
 
     await getFirebaseFirestore()
@@ -404,7 +404,7 @@ class FirebaseChatCore {
           key == 'id' ||
           key == 'updatedAt');
 
-      messageMap['authorId'] = m.author.id;
+      messageMap['id'] = m.author.id;
 
       return messageMap;
     }).toList();
