@@ -52,6 +52,7 @@ class FirebaseChatCore {
   Future<types.Room> createGroupRoom({
     String? imageUrl,
     Map<String, dynamic>? metadata,
+    required String roomId,
     required String name,
     required List<types.User> users,
   }) async {
@@ -62,12 +63,14 @@ class FirebaseChatCore {
       firebaseUser!.uid,
       config.usersCollectionName,
     );
+    currentUser['role'] = types.Role.user.toShortString();
 
     final roomUsers = [types.User.fromJson(currentUser)] + users;
 
-    final room = await getFirebaseFirestore()
+    await getFirebaseFirestore()
         .collection(config.roomsCollectionName)
-        .add({
+        .doc(roomId)
+        .set({
       'createdAt': FieldValue.serverTimestamp(),
       'imageUrl': imageUrl,
       'metadata': metadata,
@@ -85,7 +88,7 @@ class FirebaseChatCore {
     });
 
     return types.Room(
-      id: room.id,
+      id: roomId,
       imageUrl: imageUrl,
       metadata: metadata,
       name: name,
@@ -415,6 +418,183 @@ class FirebaseChatCore {
         .collection(config.roomsCollectionName)
         .doc(room.id)
         .update(roomMap);
+  }
+
+  /// Allows the current user to join an existing group room.
+  /// Returns the updated [types.Room] if successful.
+  /// Throws an error if the room doesn't exist, isn't a group, or user is already a member.
+  Future<types.Room> joinGroupRoom(String roomId) async {
+    if (firebaseUser == null) return Future.error('User does not exist');
+
+    // Get the current user data
+    final currentUser = await fetchUser(
+      getFirebaseFirestore(),
+      firebaseUser!.uid,
+      config.usersCollectionName,
+    );
+
+    // Get the room document
+    final roomDoc = await getFirebaseFirestore()
+        .collection(config.roomsCollectionName)
+        .doc(roomId)
+        .get();
+
+    if (!roomDoc.exists) {
+      return Future.error('Room does not exist');
+    }
+
+    final roomData = roomDoc.data()!;
+
+    // Verify this is a group room
+    if (roomData['type'] != types.RoomType.group.toShortString()) {
+      return Future.error('This is not a group room');
+    }
+
+    // Check if user is already a member
+    final userIds = List<String>.from(roomData['userIds']);
+    if (userIds.contains(firebaseUser!.uid)) {
+      return Future.error('User is already a member of this group');
+    }
+
+    // Add user to the room
+    userIds.add(firebaseUser!.uid);
+
+    // Update room document
+    await getFirebaseFirestore()
+        .collection(config.roomsCollectionName)
+        .doc(roomId)
+        .update({
+      'userIds': userIds,
+      'userRoles': {
+        ...Map<String, String?>.from(roomData['userRoles'] ?? {}),
+        firebaseUser!.uid: types.Role.user.toShortString(),
+      },
+      'updatedAt': FieldValue.serverTimestamp(),
+    });
+
+    // Get all users data to return updated room
+    final users = await Future.wait(
+      userIds.map((userId) => fetchUser(
+            getFirebaseFirestore(),
+            userId,
+            config.usersCollectionName,
+          )),
+    );
+
+    return types.Room(
+      id: roomId,
+      imageUrl: roomData['imageUrl'],
+      metadata: roomData['metadata'],
+      name: roomData['name'],
+      type: types.RoomType.group,
+      users: users.map((u) => types.User.fromJson(u)).toList(),
+    );
+  }
+
+  /// Creates or joins a group room with an idol, handling all necessary checks.
+  /// If the room doesn't exist, creates it.
+  /// If it exists but user isn't joined, joins it.
+  /// If already joined, just returns the existing room.
+  ///
+  /// Parameters:
+  /// - idolId: The ID of the idol to chat with
+  /// - roomName: Name of the group room (optional, will use idol's name if not provided)
+  /// - imageUrl: Optional image URL for the group avatar
+  /// - metadata: Optional additional data for the room
+  Future<types.Room> getOrCreateIdolChatRoom({
+    required String idolId,
+    String? roomName,
+    String? imageUrl,
+    Map<String, dynamic>? metadata,
+  }) async {
+    if (firebaseUser == null) return Future.error('User does not exist');
+
+    // Generate a consistent room ID for idol chats
+    final roomId = 'idol_${idolId}_room';
+
+    // Check if room exists and user membership
+    try {
+      final roomDoc = await getFirebaseFirestore()
+          .collection(config.roomsCollectionName)
+          .doc(roomId)
+          .get();
+
+      if (roomDoc.exists) {
+        // Room exists, check if current user is member
+        final roomData = roomDoc.data()!;
+        final userIds = List<String>.from(roomData['userIds'] ?? []);
+
+        if (userIds.contains(firebaseUser!.uid)) {
+          // Already a member, return existing room
+          final users = await Future.wait(
+            userIds.map((userId) => fetchUser(
+                  getFirebaseFirestore(),
+                  userId,
+                  config.usersCollectionName,
+                )),
+          );
+
+          return types.Room(
+            id: roomId,
+            imageUrl: roomData['imageUrl'],
+            metadata: roomData['metadata'],
+            name: roomData['name'],
+            type: types.RoomType.group,
+            users: users.map((u) => types.User.fromJson(u)).toList(),
+          );
+        } else {
+          // Room exists but user not joined, join it
+          return await joinGroupRoom(roomId);
+        }
+      }
+    } catch (e) {
+      // Handle any errors by creating a new room
+    }
+
+    // Room doesn't exist, fetch idol user data and create room
+    final idolUser = await fetchUser(
+      getFirebaseFirestore(),
+      idolId,
+      config.usersCollectionName,
+    );
+
+    // Set idol as moderator
+    idolUser['role'] = types.Role.moderator.toShortString();
+
+    // Convert to User object with moderator role
+    final idolWithRole = types.User.fromJson(idolUser);
+
+    // Create new room with idol as moderator and current user
+    return await createGroupRoom(
+      roomId: roomId,
+      name: roomName ?? idolUser['firstName'] ?? 'Idol Chat',
+      imageUrl: imageUrl ?? idolUser['imageUrl'],
+      metadata: metadata,
+      users: [idolWithRole],
+    );
+  }
+
+  /// Checks if a specific user is already a member of a room
+  /// Returns true if the user is a member, false otherwise
+  /// If the room doesn't exist, returns false
+  Future<bool> isUserJoinedRoom(String roomId, String userId) async {
+    try {
+      final roomDoc = await getFirebaseFirestore()
+          .collection(config.roomsCollectionName)
+          .doc(roomId)
+          .get();
+
+      if (!roomDoc.exists) {
+        return false;
+      }
+
+      final roomData = roomDoc.data()!;
+      final userIds = List<String>.from(roomData['userIds'] ?? []);
+
+      return userIds.contains(userId);
+    } catch (e) {
+      return false;
+    }
   }
 
   /// Returns a stream of all users from Firebase
