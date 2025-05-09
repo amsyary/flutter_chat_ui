@@ -6,6 +6,8 @@ import '../models/send_button_visibility_mode.dart';
 import 'attachment_button.dart';
 import 'inherited_chat_theme.dart';
 import 'inherited_l10n.dart';
+import 'inherited_room.dart';
+import 'inherited_user.dart';
 import 'send_button.dart';
 
 class NewLineIntent extends Intent {
@@ -28,7 +30,11 @@ class Input extends StatefulWidget {
     this.onTextChanged,
     this.onTextFieldTap,
     required this.sendButtonVisibilityMode,
+    this.enabled = true,
   }) : super(key: key);
+
+  /// Whether the input is enabled or not
+  final bool enabled;
 
   /// See [AttachmentButton.onPressed]
   final void Function()? onAttachmentPressed;
@@ -108,6 +114,8 @@ class _InputState extends State<Input> {
     });
   }
 
+  bool get _isInputEnabled => widget.enabled;
+
   Widget _inputBuilder() {
     final _query = MediaQuery.of(context);
     final _safeAreaInsets = kIsWeb
@@ -139,6 +147,7 @@ class _InputState extends State<Input> {
                 Expanded(
                   child: TextField(
                     controller: _textController,
+                    enabled: _isInputEnabled,
                     cursorColor: InheritedChatTheme.of(context)
                         .theme
                         .inputTextCursorColor,
@@ -176,7 +185,7 @@ class _InputState extends State<Input> {
                   ),
                 ),
                 Visibility(
-                  visible: _sendButtonVisible,
+                  visible: _sendButtonVisible && _isInputEnabled,
                   child: SendButton(
                     onPressed: _handleSendPressed,
                   ),

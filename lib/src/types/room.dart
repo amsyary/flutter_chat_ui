@@ -31,7 +31,6 @@ class Room extends Equatable {
 
   /// Creates room from a map (decoded JSON).
   factory Room.fromJson(Map<String, dynamic> json) {
-    json['type'] = 'direct'; // Modify the type to be 'direct'
     json['users'] =
         json['users'] ?? []; // If users is null, set it to an empty array
     return _$RoomFromJson(json);

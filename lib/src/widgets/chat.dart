@@ -17,6 +17,7 @@ import '../models/send_button_visibility_mode.dart';
 import '../util.dart';
 import 'chat_list.dart';
 import 'inherited_chat_theme.dart';
+import 'inherited_room.dart';
 import 'inherited_user.dart';
 import 'input.dart';
 import 'message.dart';
@@ -30,6 +31,7 @@ class Chat extends StatefulWidget {
     this.bubbleBuilder,
     this.customBottomWidget,
     this.customDateHeaderText,
+    this.room,
     this.customMessageBuilder,
     this.dateFormat,
     this.dateHeaderThreshold = 900000,
@@ -69,7 +71,11 @@ class Chat extends StatefulWidget {
     this.timeFormat,
     this.usePreviewData = true,
     required this.user,
+    this.enableInput = true,
   }) : super(key: key);
+
+  /// Whether the input field is enabled or not
+  final bool enableInput;
 
   /// See [Message.bubbleBuilder]
   final Widget Function(
@@ -238,6 +244,9 @@ class Chat extends StatefulWidget {
 
   /// See [InheritedUser.user]
   final types.User user;
+
+  /// The room information for this chat (optional)
+  final types.Room? room;
 
   @override
   _ChatState createState() => _ChatState();
@@ -432,61 +441,68 @@ class _ChatState extends State<Chat> {
   @override
   Widget build(BuildContext context) {
     return InheritedUser(
-      user: widget.user,
-      child: InheritedChatTheme(
-        theme: widget.theme,
-        child: InheritedL10n(
-          l10n: widget.l10n,
-          child: Stack(
-            children: [
-              Container(
-                color: widget.theme.backgroundColor,
-                child: Column(
-                  children: [
-                    Flexible(
-                      child: widget.messages.isEmpty
-                          ? SizedBox.expand(
-                              child: _emptyStateBuilder(),
-                            )
-                          : GestureDetector(
-                              onTap: () {
-                                FocusManager.instance.primaryFocus?.unfocus();
-                                widget.onBackgroundTap?.call();
-                              },
-                              child: LayoutBuilder(
-                                builder: (BuildContext context,
-                                        BoxConstraints constraints) =>
-                                    ChatList(
-                                  isLastPage: widget.isLastPage,
-                                  itemBuilder: (item, index) =>
-                                      _messageBuilder(item, constraints),
-                                  items: _chatMessages,
-                                  onEndReached: widget.onEndReached,
-                                  onEndReachedThreshold:
-                                      widget.onEndReachedThreshold,
-                                  scrollPhysics: widget.scrollPhysics,
+        user: widget.user,
+        child: InheritedRoom(
+          room: widget.room,
+          child: InheritedChatTheme(
+            theme: widget.theme,
+            child: InheritedL10n(
+              l10n: widget.l10n,
+              child: Stack(
+                children: [
+                  Container(
+                    color: widget.theme.backgroundColor,
+                    child: Column(
+                      children: [
+                        Flexible(
+                          child: widget.messages.isEmpty
+                              ? SizedBox.expand(
+                                  child: _emptyStateBuilder(),
+                                )
+                              : GestureDetector(
+                                  onTap: () {
+                                    FocusManager.instance.primaryFocus
+                                        ?.unfocus();
+                                    widget.onBackgroundTap?.call();
+                                  },
+                                  child: LayoutBuilder(
+                                    builder: (BuildContext context,
+                                            BoxConstraints constraints) =>
+                                        ChatList(
+                                      isLastPage: widget.isLastPage,
+                                      itemBuilder: (item, index) =>
+                                          _messageBuilder(item, constraints),
+                                      items: _chatMessages,
+                                      onEndReached: widget.onEndReached,
+                                      onEndReachedThreshold:
+                                          widget.onEndReachedThreshold,
+                                      scrollPhysics: widget.scrollPhysics,
+                                    ),
+                                  ),
                                 ),
-                              ),
-                            ),
-                    ),
-                    widget.customBottomWidget ??
-                        Input(
-                          isAttachmentUploading: widget.isAttachmentUploading,
-                          onAttachmentPressed: widget.onAttachmentPressed,
-                          onSendPressed: widget.onSendPressed,
-                          onTextChanged: widget.onTextChanged,
-                          onTextFieldTap: widget.onTextFieldTap,
-                          sendButtonVisibilityMode:
-                              widget.sendButtonVisibilityMode,
                         ),
-                  ],
-                ),
+                        widget.customBottomWidget ??
+                            Input(
+                              isAttachmentUploading:
+                                  widget.isAttachmentUploading,
+                              onAttachmentPressed: widget.enableInput
+                                  ? widget.onAttachmentPressed
+                                  : null,
+                              onSendPressed: widget.onSendPressed,
+                              onTextChanged: widget.onTextChanged,
+                              onTextFieldTap: widget.onTextFieldTap,
+                              sendButtonVisibilityMode:
+                                  widget.sendButtonVisibilityMode,
+                              enabled: widget.enableInput,
+                            ),
+                      ],
+                    ),
+                  ),
+                  if (_isImageViewVisible) _imageGalleryBuilder(),
+                ],
               ),
-              if (_isImageViewVisible) _imageGalleryBuilder(),
-            ],
+            ),
           ),
-        ),
-      ),
-    );
+        ));
   }
 }

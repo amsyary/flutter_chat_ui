@@ -82,8 +82,8 @@ Future<types.Room> processRoomDocument(
 
   var imageUrl = data['imageUrl'] as String?;
   var name = data['name'] as String?;
-  const type = 'direct';
-  // final type = data['type'] as String;
+  // const type = 'direct';
+  final type = data['type'] as String;
   final userIds = data['userIds'] as List<dynamic>;
   final userRoles = data['userRoles'] as Map<String, dynamic>?;
 
@@ -111,6 +111,8 @@ Future<types.Room> processRoomDocument(
       // Do nothing if other user is not found, because he should be found.
       // Consider falling back to some default values.
     }
+  } else if (type == types.RoomType.group.toShortString()) {
+    name = data['name'] as String?;
   }
 
   data['imageUrl'] = imageUrl;
